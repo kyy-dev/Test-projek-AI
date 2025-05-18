@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>EduBot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-100 to-pink-100 min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-xl">
+    <h1 class="text-2xl font-bold text-purple-800 mb-4">EduBot</h1>
+    <div id="chat-box" class="h-60 overflow-y-auto mb-4 p-2 bg-purple-50 rounded text-sm"></div>
+    <div class="flex">
+      <input id="user-input" class="flex-1 p-2 border rounded-l" placeholder="Tanya sesuatu..." />
+      <button id="send-btn" class="bg-purple-500 text-white px-4 rounded-r">Kirim</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('send-btn').addEventListener('click', async () => {
+      const input = document.getElementById('user-input');
+      const chatBox = document.getElementById('chat-box');
+      const userText = input.value.trim();
+      if (!userText) return;
+      chatBox.innerHTML += `<div><strong>Kamu:</strong> ${userText}</div>`;
+      input.value = '';
+      const res = await fetch('http://localhost:3000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText })
+      });
+      const data = await res.json();
+      chatBox.innerHTML += `<div><strong>EduBot:</strong> ${data.reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+</body>
+</html>
